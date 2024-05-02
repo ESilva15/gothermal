@@ -1,8 +1,10 @@
 package thermalprinter
 
 import (
+	"fmt"
 	"sync"
 
+	"thermalPrinter/config"
 	"thermalPrinter/device"
 	encodings "thermalPrinter/encoding"
 )
@@ -19,7 +21,10 @@ type TP struct {
 
 func (p *TP) Print(message string) {
 	processed := p.TextProcessor.Process(message)
-	p.Device.Write(processed)
+	_, err := p.Device.Write(processed)
+	if err != nil {
+		fmt.Println("Err: ", err)
+	}
 }
 
 func GetInstance(customDev device.WriteableDevice) *TP {
@@ -27,13 +32,11 @@ func GetInstance(customDev device.WriteableDevice) *TP {
 		var p encodings.Parser
 		p.Initialize()
 
-		devSocket := device.PrinterSocket{
-			Host: "",
-			Port: "",
-		}
+		cfg := config.GetInstance()
+		device := cfg.GetWriteableDevice()
 
 		instance = &TP{
-			Device:        &devSocket,
+			Device:        device,
 			TextProcessor: p,
 		}
 	})

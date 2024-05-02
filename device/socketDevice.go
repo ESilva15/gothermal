@@ -21,7 +21,9 @@ func (p *PrinterSocket) Write(data []byte) (int, error) {
 
 	written, err := conn.Write(data)
 	if err != nil {
-		fmt.Println("ERROR: ", err)
+		errStr := fmt.Sprintf("Error: %s", err)
+		return written, errors.New(errStr)
 	}
+
 	return written, err
 }
