@@ -5,6 +5,7 @@ go 1.22.2
 require (
 	github.com/djimenez/iconv-go v0.0.0-20160305225143-8960e66bd3da
 	github.com/spf13/cobra v1.8.0
+	golang.org/x/crypto v0.22.0
 	gopkg.in/yaml.v2 v2.4.0
 )
 
