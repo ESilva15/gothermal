@@ -14,7 +14,6 @@ import (
 
 func rootCmdAction(cmd *cobra.Command, args []string) {
 	scanner := bufio.NewScanner(os.Stdin)
-	fmt.Print("Enter text: ")
 
 	// Scan until EOF (Ctrl+D)
 	text := ""
