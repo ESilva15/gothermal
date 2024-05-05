@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Eduardo Silva</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/assets/img/favicon.png" rel="icon">
+    <link content="text/css" href="/assets/css/aesthetic.css" rel="stylesheet">
+    <script content="text/javascript" defer="" src="/assets/js/htmx.min.js"></script>
+    <script content="text/javascript" defer="" src="/assets/js/pager.js"></script>
+  </head>
+  <body>
+
+    <div id="container">
+
+      <div class="scanline"></div>
+
+      <fieldset class="main-container neon-text {{ if .warning }}warning{{ end }}">
+        <legend 
+          id="home-button"
+          style="cursor: pointer;"
+          class="neon-text {{ if .warning }}warning{{ end }}" 
+          hx-get="/aboutMe" 
+          hx-target="#container"
+          hx-replace-url="true">ESILVA.ORG</legend>
+        <div id="main-container-content" class="main-container-content">
+<!--         {{ if .renderNavBar }}
+          <nav id="page-navigation">
+            <button 
+              hx-post="/fax" 
+              hx-target="#content"
+              hx-target-5*="#doc"
+              hx-swap="innerHTML"
+              hx-replace-url="true"
+              id="aboutMe"
+              class="nav-button {{ if eq .page "fax" }}selected{{ end }}">FAX</button>
+            <button 
+              hx-post="/homepage" 
+              hx-target="#content"
+              hx-swap="innerHTML"
+              hx-replace-url="true"
+              id="projects"
+              class="nav-button {{ if eq .page "homepage" }}selected{{ end }}">HOMEPAGE</button>
+          </nav>
+          <br>
+          {{ end }} -->
+          <main id="content">
+            {{ .content }}
+          </main> 
+
+        </div>
+      </fieldset>
+
+    </div>
+
+  </body>
+</html>

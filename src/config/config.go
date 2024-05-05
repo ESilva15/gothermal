@@ -44,7 +44,7 @@ func GetInstance() *Configuration {
 }
 
 func (c *Configuration) loadConfiguration() {
-	confPath := "/home/esilva/Desktop/projetos/gothermal/config.yaml"
+	confPath := "/home/esilva/Desktop/projetos/gothermal/src/config.yaml"
 
 	file, err := os.ReadFile(confPath)
 	if err != nil {
