@@ -1,4 +1,61 @@
-<fieldset>
-  <legend>Message</legend>
-  <textarea id="fax-message"></textarea>
-</fieldset>
+<div class="center">
+  <form 
+    id="fax-form"
+    action="submit" 
+    hx-post="/send-fax"
+    hx-swap="innerHTML"
+    hx-target="#req-result">
+
+    <fieldset id="fax-message-boundaries">
+      <legend>FAX</legend>
+      <textarea name="fax-message" id="fax-message"></textarea>
+    </fieldset>
+
+    <br>
+    <button id="fax-submit-button" type="button">Submit</button>
+    <br>
+
+    <div id="req-result">-&gt;</div>
+  </form>
+</div>
+
+<script>
+  // Get a reference to the submit button
+  var submitBtn = document.getElementById("fax-submit-button");
+
+  // Add a click event listener to the submit button
+  submitBtn.addEventListener("click", function() {
+    // Get the fax message from the textarea
+    var faxMessage = document.getElementById("fax-message").value;
+
+    // Create the JSON object to send
+    var jsonData = {
+      fax_message: faxMessage
+    };
+
+    // Configure the fetch request
+    fetch("/send-fax", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(jsonData)
+    })
+    .then(response => {
+      // Check if the response is OK
+      if (response.ok) {
+        // Request was successful, handle response if needed
+        return response.text();
+      } else {
+        // Request failed, handle error if needed
+        throw new Error("Error: " + response.statusText);
+      }
+    })
+    .then(data => {
+      console.log("Success:", data);
+    })
+    .catch(error => {
+      console.error(error);
+    });
+  });
+</script>

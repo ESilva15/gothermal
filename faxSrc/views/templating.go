@@ -1,22 +1,21 @@
-package main
+package views
 
 import (
 	"bytes"
 	"html/template"
 	"log"
-	"os"
 	"path"
 )
 
-func LoadFile(path string) []byte {
-	file, err := os.ReadFile(path)
-	if err != nil {
-		log.Printf("Unable to open file: %s\n", path)
-	}
-	return file
-}
+// func loadFile(path string) []byte {
+// 	file, err := os.ReadFile(path)
+// 	if err != nil {
+// 		log.Printf("Unable to open file: %s\n", path)
+// 	}
+// 	return file
+// }
 
-func HtmlTemplate(file string, data map[string]interface{}) template.HTML {
+func htmlTemplate(file string, data map[string]interface{}) template.HTML {
 	templateName := path.Base(file)
 	tmpl, err := template.New(templateName).ParseFiles(file)
 	if err != nil {

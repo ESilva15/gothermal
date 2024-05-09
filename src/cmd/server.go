@@ -14,8 +14,8 @@ import (
 
 func serverCmdAction(cmd *cobra.Command, args []string) {
 	http.HandleFunc("/print", server.LaunchServer)
-	fmt.Println("Starting server on port 8083")
-	log.Fatal(http.ListenAndServe(":8083", nil))
+	fmt.Println("Starting server on port 9099")
+	log.Fatal(http.ListenAndServe(":9099", nil))
 }
 
 // serverCmd represents the server command
