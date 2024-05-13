@@ -6,7 +6,7 @@ func EditorPage(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 
 	mainPage := htmlTemplate("./assets/htmx/terminal.tmpl", map[string]interface{}{
-		"content":      htmlTemplate("./assets/htmx/login.html", nil),
+		"content":      htmlTemplate("./assets/htmx/editor.html", nil),
 		"renderNavBar": true,
 		"page":         "fax",
 	})

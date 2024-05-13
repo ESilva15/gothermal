@@ -5,30 +5,42 @@ import (
 	"log"
 	"net/http"
 	"thermalFax/controllers"
-	"thermalFax/models"
-	"thermalFax/views"
 )
 
-// launchServer is the main server function
-func launchServer(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Content-Type", "text/html")
-
-	// Authenticate the user
-	// TODO: I should make this a bit better since we want to use another service
-	// and that one should handle the authentication and this one make use of it
-	var auth models.Authentication
-	if !auth.Authenticate(w, r) {
-		return
-	}
-
-	views.EditorPage(w, r)
+func checkMethod(method string, r *http.Request) bool {
+	return r.Method == method
 }
 
 func main() {
 	// Set up a very basic http server
-	http.HandleFunc("/", launchServer)
+	// TODO: display users main page on /
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		if !checkMethod(http.MethodGet, r) {
+			w.WriteHeader(http.StatusMethodNotAllowed)
+			return
+		}
 
-	http.HandleFunc("/send-fax", controllers.SendFax)
+		controllers.EditorPage(w, r)
+	})
+
+	// Both should be POST only
+	http.HandleFunc("/send-fax", func(w http.ResponseWriter, r *http.Request) {
+		if !checkMethod(http.MethodPost, r) {
+			w.WriteHeader(http.StatusMethodNotAllowed)
+			return
+		}
+
+		controllers.SendFax(w, r)
+	})
+
+	http.HandleFunc("/send-login", func(w http.ResponseWriter, r *http.Request) {
+		if !checkMethod(http.MethodPost, r) {
+			w.WriteHeader(http.StatusMethodNotAllowed)
+			return
+		}
+
+		controllers.Authenticate(w, r)
+	})
 
 	// Serve the CSS and JS files, we might have to change this
 	http.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir("assets"))))

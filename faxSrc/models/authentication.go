@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/golang-jwt/jwt/v4"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -49,4 +50,24 @@ func (a *Authentication) Authenticate(w http.ResponseWriter, r *http.Request) bo
 
 	log.Printf("User %s logged in successfully", username)
 	return true
+}
+
+type LoginForm struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+type Claims struct {
+	jwt.RegisteredClaims
+}
+
+func ValidateCredentials(lf *LoginForm) bool {
+	p, ok := DATABASE[lf.Username]
+	if !ok {
+		return false
+	}
+
+	err := bcrypt.CompareHashAndPassword([]byte(p), []byte(lf.Password))
+
+	return err == nil
 }
