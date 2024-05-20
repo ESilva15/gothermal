@@ -24,10 +24,16 @@ type Claims struct {
 	jwt.RegisteredClaims
 }
 
+type SessionData struct {
+	User           string
+	Token          string
+	ExpirationTime int64
+}
+
 // Private functions
 
-func openDB() *SQLite {
-	var d SQLite
+func openDB() *Database {
+	var d Database
 	err := d.Initialize("../src/data.db")
 	if err != nil {
 		log.Fatal("Failed to get into DB: ", err)
@@ -78,8 +84,6 @@ func insertToken(token string, user string, expirationDate int64) error {
 		);
 	`
 
-	log.Println(query)
-
 	_, err := d.DB.Exec(query)
 	if err != nil {
 		log.Fatal("Failed to insert data: ", err)
@@ -87,6 +91,35 @@ func insertToken(token string, user string, expirationDate int64) error {
 	}
 
 	return nil
+}
+
+func getSessionData(token string) (*SessionData, error) {
+	d := openDB()
+
+	query := `
+	SELECT user, token, expires FROM sessions WHERE token='` + token + `';
+	`
+
+	rows, err := d.DB.Query(query)
+	if err != nil {
+		log.Fatal("Failed to get user data: ", err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	var p SessionData
+	for rows.Next() {
+		if err := rows.Scan(&p.User, &p.Token, &p.ExpirationTime); err != nil {
+			log.Fatal("Failed to read row.", err)
+		}
+	}
+
+	// No password found (user doesn't exist?)
+	if len(p.Token) == 0 {
+		return nil, nil
+	}
+
+	return &p, nil
 }
 
 // Public functions
@@ -109,4 +142,8 @@ func StoreSessionToken(token string, user string, expirationDate int64) error {
 	}
 
 	return nil
+}
+
+func GetSession(token string) (*SessionData, error) {
+	return getSessionData(token)
 }

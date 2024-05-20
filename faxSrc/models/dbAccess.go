@@ -15,12 +15,12 @@ type DBAccess interface {
 	updateq(query string) error
 }
 
-type SQLite struct {
+type Database struct {
 	DB   *sql.DB
 	Path string
 }
 
-func (s *SQLite) Initialize(path string) error {
+func (s *Database) Initialize(path string) error {
 	db, err := sql.Open("sqlite3", path)
 	if err != nil {
 		return err
@@ -29,21 +29,5 @@ func (s *SQLite) Initialize(path string) error {
 	s.Path = path
 	s.DB = db
 
-	return nil
-}
-
-func (s *SQLite) Createq(query string) error {
-	return nil
-}
-
-func (s *SQLite) Selectq(query string) error {
-	return nil
-}
-
-func (s *SQLite) Deleteq(query string) error {
-	return nil
-}
-
-func (s *SQLite) Updateq(query string) error {
 	return nil
 }
