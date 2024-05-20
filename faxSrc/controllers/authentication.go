@@ -69,5 +69,5 @@ func Authenticate(w http.ResponseWriter, r *http.Request) {
 	}
 	http.SetCookie(w, &cookie)
 
-	log.Printf(`| {"user": %s, "pass": %s}`, loginForm.Username, loginForm.Password)
+	log.Printf(`| {"user": %s, "time": %d}`, loginForm.Username, time.Now().Unix())
 }
