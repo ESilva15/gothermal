@@ -8,8 +8,7 @@ import (
 	"io"
 	"log"
 	"net/http"
-
-	"thermalFax/views"
+	"thermalFax/models"
 )
 
 type PrintServerResponse struct {
@@ -58,10 +57,13 @@ func sendRequestToPrinter(msg string) (PrintServerResponse, error) {
 // sendFax is a function that receives the data from the fronted and
 // sends it to the print server
 func SendFax(w http.ResponseWriter, r *http.Request) {
-	if !isAuthenticated(r) {
-		views.LoginPage(w, r)
+	authd, token := isAuthenticated(r)
+	if !authd {
 		return
 	}
+
+	session, _ := models.GetSession(token)
+	log.Printf(" | User %s request a fax.", session.User)
 
 	data, _ := io.ReadAll(r.Body)
 	log.Printf("| Received Request: %s", data)

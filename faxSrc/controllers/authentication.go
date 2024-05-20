@@ -11,17 +11,17 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 )
 
-func isAuthenticated(r *http.Request) bool {
+func isAuthenticated(r *http.Request) (bool, string) {
 	cookies := r.Cookies()
 	for _, c := range cookies {
 		if c.Name == "token" {
 			// Check if the token exists and if its date is valid
 			expirationTime := time.Now()
-			return expirationTime.Unix() >= c.Expires.Unix()
+			return expirationTime.Unix() >= c.Expires.Unix(), c.Value
 		}
 	}
 
-	return false
+	return false, ""
 }
 
 func Authenticate(w http.ResponseWriter, r *http.Request) {

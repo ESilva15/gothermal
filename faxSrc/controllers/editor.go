@@ -6,7 +6,8 @@ import (
 )
 
 func EditorPage(w http.ResponseWriter, r *http.Request) {
-	if !isAuthenticated(r) {
+	authd, _ := isAuthenticated(r)
+	if !authd {
 		views.LoginPage(w, r)
 		return
 	}
