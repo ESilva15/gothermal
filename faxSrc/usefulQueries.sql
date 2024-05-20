@@ -7,6 +7,13 @@ CREATE TABLE IF NOT EXISTS users(
 	password TEXT NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS sessions(
+	id       INTEGER PRIMARY KEY AUTOINCREMENT,
+	user     TEXT NOT NULL UNIQUE,
+	token    TEXT NOT NULL,
+  expires  INTEGER
+);
+
 -- pass is kika here
 INSERT INTO
   users(name, password)

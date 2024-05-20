@@ -69,5 +69,10 @@ func Authenticate(w http.ResponseWriter, r *http.Request) {
 	}
 	http.SetCookie(w, &cookie)
 
+	err = models.StoreSessionToken(tokenString, loginForm.Username, expirationTime.Unix())
+	if err != nil {
+		log.Fatal("Failed to store session token: ", err)
+	}
+
 	log.Printf(`| {"user": %s, "time": %d}`, loginForm.Username, time.Now().Unix())
 }
