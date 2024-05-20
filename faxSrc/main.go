@@ -12,8 +12,7 @@ func checkMethod(method string, r *http.Request) bool {
 }
 
 func main() {
-	// Set up a very basic http server
-	// TODO: display users main page on /
+	// GET calls
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if !checkMethod(http.MethodGet, r) {
 			w.WriteHeader(http.StatusMethodNotAllowed)
@@ -23,7 +22,7 @@ func main() {
 		controllers.EditorPage(w, r)
 	})
 
-	// Both should be POST only
+	// POST calls
 	http.HandleFunc("/send-fax", func(w http.ResponseWriter, r *http.Request) {
 		if !checkMethod(http.MethodPost, r) {
 			w.WriteHeader(http.StatusMethodNotAllowed)
