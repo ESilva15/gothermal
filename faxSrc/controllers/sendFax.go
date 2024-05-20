@@ -8,6 +8,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+
 	"thermalFax/views"
 )
 
@@ -22,7 +23,6 @@ type WebFrontendRequest struct {
 // SendRequestToPrinter function will request the thermal printer
 // to print the message.
 // It should be able to send the requests both via http/https or sockets
-// TODO: add support for sockets
 func sendRequestToPrinter(msg string) (PrintServerResponse, error) {
 	// Send the request to the actual printer server
 	req, err := http.NewRequest(
