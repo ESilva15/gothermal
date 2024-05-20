@@ -8,49 +8,11 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-var DATABASE map[string]string = map[string]string{
-	"user": "$2y$08$ZBb/RxlrNHcA.YNasvGlhOeUmJVZe/clNelP4jwBpkpq/r4mE.lze",
-}
-
 type Authenticator interface {
 	isAuthorised(string, string) bool
 	Authenticate(w http.ResponseWriter, r *http.Request) bool
 }
 type Authentication struct{}
-
-// pass -> $2y$08$ZBb/RxlrNHcA.YNasvGlhOeUmJVZe/clNelP4jwBpkpq/r4mE.lze
-func (a *Authentication) isAuthorised(user string, pass string) bool {
-	p, ok := DATABASE[user]
-	if !ok {
-		return false
-	}
-
-	err := bcrypt.CompareHashAndPassword([]byte(p), []byte(pass))
-
-	return err == nil
-}
-
-func (a *Authentication) Authenticate(w http.ResponseWriter, r *http.Request) bool {
-	username, password, ok := r.BasicAuth()
-	if !ok {
-		log.Println("Log in failed")
-		w.Header().Add("WWW-Authenticate", `Basic realm="Give username and password"`)
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte(`{"message": "No basic auth present"}`))
-		return false
-	}
-
-	if !a.isAuthorised(username, password) {
-		log.Printf("Log in failed: %s:%s", username, password)
-		w.Header().Add("WWW-Authenticate", `Basic realm="Give username and password"`)
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte(`{"message": "Invalid username or password"}`))
-		return false
-	}
-
-	log.Printf("User %s logged in successfully", username)
-	return true
-}
 
 type LoginForm struct {
 	Username string `json:"username"`
@@ -61,13 +23,50 @@ type Claims struct {
 	jwt.RegisteredClaims
 }
 
-func ValidateCredentials(lf *LoginForm) bool {
-	p, ok := DATABASE[lf.Username]
-	if !ok {
-		return false
+// Private functions
+
+func getUserPass(user string) (string, error) {
+	var d SQLite
+	err := d.Initialize("../src/data.db")
+	if err != nil {
+		log.Fatal("Failed to get into DB: ", err)
 	}
 
-	err := bcrypt.CompareHashAndPassword([]byte(p), []byte(lf.Password))
+	query := `
+	SELECT password FROM users WHERE name='` + user + `';
+	`
+
+	rows, err := d.DB.Query(query)
+	if err != nil {
+		log.Fatal("Failed to get user data: ", err)
+		return "", err
+	}
+	defer rows.Close()
+
+	var p string
+	for rows.Next() {
+		if err := rows.Scan(&p); err != nil {
+			log.Fatal("Failed to read row.", err)
+		}
+	}
+
+	// No password found (user doesn't exist?)
+	if len(p) == 0 {
+		return "", nil
+	}
+
+	return p, nil
+}
+
+// Public functions
+
+func ValidateCredentials(lf *LoginForm) bool {
+	passwd, err := getUserPass(lf.Username)
+	if err != nil {
+		log.Fatal("Failed to get password from DB: ", err)
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(passwd), []byte(lf.Password))
 
 	return err == nil
 }
