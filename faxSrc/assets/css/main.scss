@@ -97,7 +97,7 @@ code {
   // The width can also be 48chr for large chars
   // 64chr for small chars
   // Add 4 chars to compensate for paddings and so on
-  width: calc(48ch + 4ch);
+  width: calc(64ch + 4ch);
   height: 100%;
 }
 
@@ -126,6 +126,9 @@ textarea {
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
   box-shadow: none;
+
+  text-wrap:unrestricted;
+  word-break: break-word;
 }
 
 

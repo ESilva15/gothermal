@@ -27,22 +27,22 @@
 
 @keyframes flicker {
   0% {
-    opacity: 0.9;
+    opacity: 1;
   }
   20% {
-    opacity: 1;
+    opacity: 1.1;
   }
   40% {
-    opacity: 1.1;
-  }
-  60% {
-    opacity: 0.9;
-  }
-  80% {
     opacity: 1;
   }
-  100% {
+  60% {
+    opacity: 1;
+  }
+  80% {
     opacity: 1.1;
+  }
+  100% {
+    opacity: 1;
   }
 }
 @keyframes beam {
@@ -214,11 +214,15 @@ code {
 
 .center {
   margin: auto;
-  width: 52ch;
+  width: 68ch;
   height: 100%;
 }
 
 #fax-message-boundaries {
+  height: 100%;
+}
+
+#login-box-boundaries {
   height: 100%;
 }
 
@@ -237,6 +241,8 @@ textarea {
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
   box-shadow: none;
+  text-wrap: unrestricted;
+  word-break: break-word;
 }
 
 /* CSS for centering images */
