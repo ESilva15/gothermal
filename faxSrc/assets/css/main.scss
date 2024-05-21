@@ -109,6 +109,27 @@ code {
   height: 100%;
 }
 
+.login-container {
+  display: block;
+  width: 100%; /* Adjust width as needed */
+  max-width: 300px; /* Adjust max-width as needed */
+  margin: auto;
+  text-align: center;
+}
+
+.tui-input {
+  font-family: dejavu_monospace;
+  font-size: var(--html_font_size);
+  // border: 1px;
+  border: solid 2px;
+  // border-color: --var(--text-color);
+  overflow: auto;
+  outline: none;
+  resize: none;
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
 textarea {
   scrollbar-width: none;
   width: 100%;
