@@ -15,7 +15,7 @@
     <button id="fax-submit-button" type="button">Submit</button>
     <br>
 
-    <div id="req-result">-&gt;</div>
+    <div id="req-result"></div>
   </form>
 </div>
 
@@ -52,7 +52,15 @@
       }
     })
     .then(data => {
-      console.log("Success:", data);
+      const response = JSON.parse(data)
+      
+      console.log(data)
+      var elem = document.getElementById("req-result")
+      if (response["state"] === "success") {
+        elem.innerHTML = "-> Fax sent successfully <-"
+      } else {
+        elem.innerHTML = "-> Fax failed to send <-"
+      }
     })
     .catch(error => {
       console.error(error);

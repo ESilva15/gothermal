@@ -19,6 +19,10 @@ type WebFrontendRequest struct {
 	Message string `json:"fax_message"`
 }
 
+type WebFrontendResponse struct {
+	State string `json:"state"`
+}
+
 // SendRequestToPrinter function will request the thermal printer
 // to print the message.
 // It should be able to send the requests both via http/https or sockets
@@ -63,27 +67,25 @@ func SendFax(w http.ResponseWriter, r *http.Request) {
 	}
 
 	session, _ := models.GetSession(token)
-	log.Printf(" | User %s request a fax.", session.User)
+	log.Printf("| User %s requested a fax", session.User)
 
 	data, _ := io.ReadAll(r.Body)
-	log.Printf("| Received Request: %s", data)
 
 	// Parse the JSON data that comes from the form
 	var formData WebFrontendRequest
 	err := json.Unmarshal(data, &formData)
 	if err != nil {
 		log.Println("Failed to unmarshal form data: ", err)
-		w.Write([]byte("Failed to unmarshal form data."))
+		w.Write([]byte("{\"state\":\"failed\"}"))
 		return
 	}
 
-	resp, err := sendRequestToPrinter(formData.Message)
+	_, err = sendRequestToPrinter(formData.Message)
 	if err != nil {
-		w.Write([]byte(fmt.Sprintf("Failed to send message to printer: %s", err)))
+		w.Write([]byte("{\"state\":\"failed\"}"))
 		return
 	}
 
-	log.Println("Print Service Response: ", resp.Message)
-
-	w.Write([]byte("Success"))
+	w.Header().Set("Content-Type", "text/json")
+	w.Write([]byte("{\"state\":\"success\"}"))
 }
