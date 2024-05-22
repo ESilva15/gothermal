@@ -59,14 +59,4 @@
       console.error(error);
     });
   });
-
-  // Replace the dots by asterisks
-  loginPass = document.getElementById("login-pass")
-  loginPass.addEventListener("keydown", function() {
-
-    const curVal = loginPass.value;
-    const newVal = curVal.replace(new RegExp(curVal, 'g'), '*');
-
-    loginPass.value = newVal;
-  })
 </script>
