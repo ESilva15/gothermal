@@ -5,8 +5,8 @@ import "net/http"
 func EditorPage(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 
-	mainPage := htmlTemplate("./assets/htmx/terminal.tmpl", map[string]interface{}{
-		"content":      htmlTemplate("./assets/htmx/editor.html", nil),
+	mainPage := HtmlTemplate("./assets/htmx/terminal.tmpl", map[string]interface{}{
+		"content":      HtmlTemplate("./assets/htmx/editor.html", nil),
 		"renderNavBar": true,
 		"page":         "fax",
 	})

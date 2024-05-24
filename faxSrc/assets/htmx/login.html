@@ -17,6 +17,7 @@
   </form>
 </div>
 
+{{ if .script }}
 <script>
   // Get a reference to the submit button
   var submitBtn = document.getElementById("login-submit-button");
@@ -52,11 +53,11 @@
       }
     })
     .then(data => {
-      window.location.replace("http://localhost:8083/")
-      console.log("Success:", data);
+      window.location.replace(window.location.origin + "/")
     })
     .catch(error => {
       console.error(error);
     });
   });
 </script>
+{{ end }}

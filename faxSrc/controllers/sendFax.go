@@ -63,6 +63,9 @@ func sendRequestToPrinter(msg string) (PrintServerResponse, error) {
 func SendFax(w http.ResponseWriter, r *http.Request) {
 	authd, token := isAuthenticated(r)
 	if !authd {
+		w.Header().Set("Content-Type", "text/json")
+		w.Write([]byte("{\"state\":\"unauthenticated\"}"))
+
 		return
 	}
 
@@ -82,6 +85,7 @@ func SendFax(w http.ResponseWriter, r *http.Request) {
 
 	_, err = sendRequestToPrinter(formData.Message)
 	if err != nil {
+		log.Println("Printer failed to process fax:", err)
 		w.Write([]byte("{\"state\":\"failed\"}"))
 		return
 	}

@@ -15,7 +15,7 @@ import (
 // 	return file
 // }
 
-func htmlTemplate(file string, data map[string]interface{}) template.HTML {
+func HtmlTemplate(file string, data map[string]interface{}) template.HTML {
 	templateName := path.Base(file)
 	tmpl, err := template.New(templateName).ParseFiles(file)
 	if err != nil {

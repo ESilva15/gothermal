@@ -1,10 +1,5 @@
 <div class="center">
-  <form 
-    id="fax-form"
-    action="submit" 
-    hx-post="/send-fax"
-    hx-swap="innerHTML"
-    hx-target="#req-result">
+  <form id="fax-form" action="submit" hx-post="/send-fax" hx-swap="innerHTML" hx-target="#req-result">
 
     <fieldset id="fax-message-boundaries">
       <legend>FAX</legend>
@@ -20,11 +15,48 @@
 </div>
 
 <script>
+  // This function will persist the current editor data
+  // and send the user back to the login page
+  function reauth() {
+    localStorage.setItem("editor-text", document.getElementById("fax-message").value)
+    window.location.replace(window.location.origin + "/")
+  }
+
+  // this will load the editor data if we have it in storage
+  function loadStorageData() {
+    const savedContent = localStorage.getItem('editor-text');
+    if (savedContent) {
+        document.getElementById('fax-message').value = savedContent;
+    }
+  }
+
+  // If the fax is sent successfully we no longer need to cache it
+  // We will persist in the DB
+  function resetStorageData() {
+    localStorage.setItem("editor-text", document.getElementById("fax-message").value)
+  }
+
+  function handleSuccessfulPOST(data) {
+    console.log(data)
+
+    const response = JSON.parse(data)
+
+    var elem = document.getElementById("req-result")
+    if (response["state"] === "success") {
+      elem.innerHTML = "-> Fax sent successfully <-"
+      resetStorageData();
+    } else if (response["state"] === "unauthenticated") {
+      reauth();
+    } else {
+      elem.innerHTML = "-> Fax failed to send <-"
+    }
+  }
+
   // Get a reference to the submit button
   var submitBtn = document.getElementById("fax-submit-button");
 
   // Add a click event listener to the submit button
-  submitBtn.addEventListener("click", function() {
+  submitBtn.addEventListener("click", function () {
     // Get the fax message from the textarea
     var faxMessage = document.getElementById("fax-message").value;
 
@@ -41,29 +73,23 @@
       },
       body: JSON.stringify(jsonData)
     })
-    .then(response => {
-      // Check if the response is OK
-      if (response.ok) {
-        // Request was successful, handle response if needed
-        return response.text();
-      } else {
-        // Request failed, handle error if needed
-        throw new Error("Error: " + response.statusText);
-      }
-    })
-    .then(data => {
-      const response = JSON.parse(data)
-      
-      console.log(data)
-      var elem = document.getElementById("req-result")
-      if (response["state"] === "success") {
-        elem.innerHTML = "-> Fax sent successfully <-"
-      } else {
-        elem.innerHTML = "-> Fax failed to send <-"
-      }
-    })
-    .catch(error => {
-      console.error(error);
-    });
+      .then(response => {
+        // Check if the response is OK
+        if (response.ok) {
+          // Request was successful, handle response if needed
+          return response.text();
+        } else {
+          // Request failed, handle error if needed
+          throw new Error("Error: " + response.statusText);
+        }
+      })
+      .then(data => {
+        handleSuccessfulPOST(data)
+      })
+      .catch(error => {
+        console.error(error);
+      });
   });
+
+  loadStorageData();
 </script>
