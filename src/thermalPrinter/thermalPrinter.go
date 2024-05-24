@@ -21,6 +21,15 @@ type TP struct {
 
 func (p *TP) Print(message string) {
 	processed := p.TextProcessor.Process(message)
+	// Message + feed n lines
+	processed = append(processed, []byte{0x1B, 0x64, 0x03}...)
+
+	// Message + partial cut command
+	// processed = append(processed, []byte{0x1B, 0x69}...)
+
+	// Message + full cut command
+	processed = append(processed, []byte{0x1B, 0x6D}...)
+
 	_, err := p.Device.Write(processed)
 	if err != nil {
 		fmt.Println("Err: ", err)
