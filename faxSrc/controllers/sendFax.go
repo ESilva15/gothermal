@@ -85,7 +85,7 @@ func SendFax(w http.ResponseWriter, r *http.Request) {
 
 	_, err = sendRequestToPrinter(formData.Message)
 	if err != nil {
-		log.Println("Printer failed to process fax:", err)
+		log.Println("| Printer failed to process fax:", err)
 		w.Write([]byte("{\"state\":\"failed\"}"))
 		return
 	}
