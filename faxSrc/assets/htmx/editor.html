@@ -1,5 +1,5 @@
 <div class="center">
-  <form id="fax-form" action="submit" hx-post="/send-fax" hx-swap="innerHTML" hx-target="#req-result">
+  <form id="fax-form" action="submit">
 
     <fieldset id="fax-message-boundaries">
       <legend>FAX</legend>
@@ -37,8 +37,6 @@
   }
 
   function handleSuccessfulPOST(data) {
-    console.log(data)
-
     const response = JSON.parse(data)
 
     var elem = document.getElementById("req-result")
