@@ -8,7 +8,10 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"strings"
 	"thermalFax/models"
+	"time"
+	"unicode/utf8"
 )
 
 type PrintServerResponse struct {
@@ -83,7 +86,8 @@ func SendFax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = sendRequestToPrinter(formData.Message)
+	msg := signMessage(formData.Message, session.User, time.Now().Format("2006-01-02 15:04:05"))
+	_, err = sendRequestToPrinter(msg)
 	if err != nil {
 		log.Println("| Printer failed to process fax:", err)
 		w.Write([]byte("{\"state\":\"failed\"}"))
@@ -92,4 +96,57 @@ func SendFax(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "text/json")
 	w.Write([]byte("{\"state\":\"success\"}"))
+}
+
+// NOTE: this isn't multi-Unicode-codepoint aware, like specifying skintone or
+// gender of an emoji: https://unicode.org/emoji/charts/full-emoji-modifiers.html
+// This thing was straight up copied from SO
+func substr(input string, start int, length int) string {
+	asRunes := []rune(input)
+
+	if start >= len(asRunes) {
+		return ""
+	}
+
+	if start+length > len(asRunes) {
+		length = len(asRunes) - start
+	}
+
+	return string(asRunes[start : start+length])
+}
+
+// truncateString given a string and a lim truncates that string if its longer than the lim
+// with "..."
+func truncateString(s string, lim int) string {
+	runeCount := utf8.RuneCountInString(s)
+	if runeCount > lim {
+		s = substr(s, 0, lim-3) + "..."
+	} else {
+		s = s + strings.Repeat(" ", lim-runeCount)
+	}
+
+	return s
+}
+
+// signMessage adds a small box to the message so the reader knows who sent it and the time
+func signMessage(msg string, user string, time string) string {
+	// defWidht := 48
+	nameWidth := 39
+	userLine := "| User: "
+	userLine = userLine + truncateString(user, nameWidth) + "|"
+
+	// defWidht := 48
+	timeWidth := 39
+	timeLine := "| Time: "
+	timeLine = timeLine + truncateString(time, timeWidth) + "|"
+
+	sign := fmt.Sprintf(`
++----------------------------------------------+
+%s
+%s
++----------------------------------------------+`,
+		userLine, timeLine)
+	truncation := "+- END ---------------------------------- END -+"
+
+	return sign + "\n" + msg + "\n\n" + truncation
 }
