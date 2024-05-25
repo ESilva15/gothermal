@@ -27,22 +27,22 @@
 
 @keyframes flicker {
   0% {
-    opacity: 1.1;
+    opacity: 0.9;
   }
   20% {
     opacity: 1;
   }
   40% {
-    opacity: 1;
-  }
-  60% {
-    opacity: 1;
-  }
-  80% {
     opacity: 1.1;
   }
-  100% {
+  60% {
+    opacity: 1.1;
+  }
+  80% {
     opacity: 1;
+  }
+  100% {
+    opacity: 0.9;
   }
 }
 @keyframes beam {
@@ -214,7 +214,7 @@ code {
 
 .center {
   margin: auto;
-  width: 68ch;
+  width: 52ch;
   height: 100%;
 }
 
