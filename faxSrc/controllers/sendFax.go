@@ -9,9 +9,10 @@ import (
 	"log"
 	"net/http"
 	"strings"
-	"thermalFax/models"
 	"time"
 	"unicode/utf8"
+
+	"thermalFax/models"
 )
 
 type PrintServerResponse struct {

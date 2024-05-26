@@ -11,13 +11,14 @@ func TestSignMessage_NormalUserName(t *testing.T) {
 	msg := "Hello, world!"
 	tm := "2024-05-31 15:02:23"
 
-	expected := `
+	expectedOutput := `
 +----------------------------------------------+
 | User: Alice                                  |
 | Time: 2024-05-31 15:02:23                    |
-+----------------------------------------------+`
-	truncation := "\n\n+- END ---------------------------------- END -+"
-	expectedOutput := expected + "\n" + msg + truncation
++----------------------------------------------+
+Hello, world!
+
++- END ---------------------------------- END -+`
 
 	// Act
 	result := signMessage(msg, user, tm)
@@ -35,13 +36,14 @@ func TestSignMessage_VeryLongUserName(t *testing.T) {
 	msg := "Hello, world!"
 	tm := "2024-05-31 15:02:23"
 
-	expected := `
+	expectedOutput := `
 +----------------------------------------------+
 | User: Alice Cuja Mãe Deu Um Nome Demasiado...|
 | Time: 2024-05-31 15:02:23                    |
-+----------------------------------------------+`
-	truncation := "\n\n+- END ---------------------------------- END -+"
-	expectedOutput := expected + "\n" + msg + truncation
++----------------------------------------------+
+Hello, world!
+
++- END ---------------------------------- END -+`
 
 	// Act
 	result := signMessage(msg, user, tm)
@@ -55,18 +57,18 @@ func TestSignMessage_VeryLongUserName(t *testing.T) {
 func TestSignMessage_UserNameMatchesAvailableSpace(t *testing.T) {
 	// Arrange
 
-	user := "Alice Cuja Mãe Deu Um Nome Demasiado Longo"
+	user := "Alice Cuja Mãe Deu Um Nome Demasiado Lo"
 	msg := "Hello, world!"
 	tm := "2024-05-31 15:02:23"
-	// Alice Cuja Mãe Deu Um Nome Demasiado...
-	// umnomeextrasuperduperlongoesperoquei...
-	expected := `
+
+	expectedOutput := `
 +----------------------------------------------+
-| User: Alice Cuja Mãe Deu Um Nome Demasiado...|
+| User: Alice Cuja Mãe Deu Um Nome Demasiado Lo|
 | Time: 2024-05-31 15:02:23                    |
-+----------------------------------------------+`
-	truncation := "\n\n+- END ---------------------------------- END -+"
-	expectedOutput := expected + "\n" + msg + truncation
++----------------------------------------------+
+Hello, world!
+
++- END ---------------------------------- END -+`
 
 	// Act
 	result := signMessage(msg, user, tm)
@@ -80,8 +82,6 @@ func TestSignMessage_UserNameMatchesAvailableSpace(t *testing.T) {
 func TestTruncateString_StringLargerThenLim(t *testing.T) {
 	// Arrange
 	user := "umnomeextrasuperduperlongoesperoqueistochegue"
-	// Alice Cuja Mãe Deu Um Nome Demasiado...
-	// umnomeextrasuperduperlongoesperoquei...
 
 	expected := "umnomeextrasuperduperlongoesperoquei..."
 
@@ -97,8 +97,6 @@ func TestTruncateString_StringLargerThenLim(t *testing.T) {
 func TestTruncateString_StringSmallerThenLim(t *testing.T) {
 	// Arrange
 	user := "umnome"
-	// Alice Cuja Mãe Deu Um Nome Demasiado...
-	// umnomeextrasuperduperlongoesperoquei...
 
 	expected := "umnome                                 "
 
@@ -114,8 +112,6 @@ func TestTruncateString_StringSmallerThenLim(t *testing.T) {
 func TestTruncateString_StringEqualsThenLim(t *testing.T) {
 	// Arrange
 	user := "umnomeextrasuperduperlongoesperoqueisto"
-	// Alice Cuja Mãe Deu Um Nome Demasiado...
-	// umnomeextrasuperduperlongoesperoquei...
 
 	expected := "umnomeextrasuperduperlongoesperoqueisto"
 
