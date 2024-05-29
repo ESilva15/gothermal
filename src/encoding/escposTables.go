@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	CAPABILITES = "/home/esilva/Desktop/projetos/escpos-printer-db/dist/capabilities.json"
+	CAPABILITES = "./capabilities.json"
 )
 
 type PrinterEncodings struct {
