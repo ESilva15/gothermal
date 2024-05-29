@@ -1,0 +1,8 @@
+use: "socket"
+socket:
+  host: "127.0.0.1"
+  port: "9100"
+usb:
+  path: "/dev/usb/lp0"
+encoding:
+  capabilities-file: ./capabilities.json
