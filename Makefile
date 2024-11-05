@@ -1,19 +1,19 @@
 build:
-	docker buildx build -t esilva-printer .
+	docker buildx build -t thprinter .
 
 clean:
-	docker container rm esilva-printer-container-test --force
+	docker container rm thprinter-container-test --force
 
 attach:
-	docker exec -u root -it esilva-printer-container zsh
+	docker exec -u root -it thprinter-container zsh
 
 attach-test:
-	docker exec -u root -it esilva-printer-container-test zsh
+	docker exec -u root -it thprinter-container-test zsh
 
 test: clean
 	docker run \
-		--name esilva-printer-container-test \
+		--name thprinter-container-test \
 		-p 9099:9099 \
-		-it esilva-printer zsh
+		-it thprinter zsh
 
 debug: clean test
